@@ -10,8 +10,22 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WA Direct">
 <title>WA Direct</title>
-<link id="manifestLink" rel="manifest">
-<link id="appleIcon" rel="apple-touch-icon">
+<!-- Fixed: Using a data URI for the manifest to guarantee PWA detection across browsers -->
+<link id="manifestLink" rel="manifest" href='data:application/manifest+json,{
+  "name": "WA Direct — WhatsApp Messenger",
+  "short_name": "WA Direct",
+  "description": "Send WhatsApp messages instantly without saving the number.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#075E54",
+  "theme_color": "#075E54",
+  "icons": [
+    {"src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/><path d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/></svg>", "sizes": "192x192 512x512", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}'>
+<link id="appleIcon" rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/><path d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/></svg>">
 <style>
 /* =========================================================
    THEME TOKENS — premium palette
@@ -1374,65 +1388,20 @@ function toast(msg) {
 }
 
 /* =========================================================
-   19. PWA
+   19. PWA (Fixed Service Worker implementation)
    ========================================================= */
-function makeIcon(size) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const x = c.getContext('2d');
-  const g = x.createLinearGradient(0,0,size,size);
-  g.addColorStop(0,'#25D366'); g.addColorStop(1,'#075E54');
-  x.fillStyle = g;
-  const r = size*0.22;
-  x.beginPath();
-  x.moveTo(r,0);
-  x.arcTo(size,0,size,size,r); x.arcTo(size,size,0,size,r);
-  x.arcTo(0,size,0,0,r); x.arcTo(0,0,size,0,r);
-  x.closePath(); x.fill();
-  x.fillStyle = 'rgba(255,255,255,0.95)';
-  const bw = size*0.56, bh = size*0.44;
-  const bx = (size-bw)/2, by = size*0.24;
-  const br = size*0.11;
-  x.beginPath();
-  x.moveTo(bx+br, by);
-  x.arcTo(bx+bw, by, bx+bw, by+bh, br);
-  x.arcTo(bx+bw, by+bh, bx, by+bh, br);
-  x.lineTo(bx+bw*0.36, by+bh);
-  x.lineTo(bx+bw*0.22, by+bh+size*0.09);
-  x.lineTo(bx+bw*0.22, by+bh);
-  x.arcTo(bx, by+bh, bx, by, br);
-  x.arcTo(bx, by, bx+bw, by, br);
-  x.closePath(); x.fill();
-  x.fillStyle = '#075E54';
-  x.font = 'bold ' + Math.round(size*0.22) + 'px -apple-system,Segoe UI,Roboto,sans-serif';
-  x.textAlign = 'center'; x.textBaseline = 'middle';
-  x.fillText('WA', size/2, by + bh*0.5);
-  return c.toDataURL('image/png');
-}
 function setupPWA() {
-  try {
-    const i192 = makeIcon(192), i512 = makeIcon(512);
-    const manifest = {
-      name:'WA Direct — WhatsApp Messenger', short_name:'WA Direct',
-      description:'Send WhatsApp messages without saving the number.',
-      start_url: location.pathname + location.search, scope:'./',
-      display:'standalone', orientation:'portrait',
-      background_color:'#075E54', theme_color:'#075E54',
-      icons:[
-        {src:i192, sizes:'192x192', type:'image/png', purpose:'any'},
-        {src:i512, sizes:'512x512', type:'image/png', purpose:'any'},
-        {src:i512, sizes:'512x512', type:'image/png', purpose:'maskable'}
-      ]
-    };
-    const b = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
-    $('manifestLink').href = URL.createObjectURL(b);
-    $('appleIcon').href = i192;
-  } catch(e){}
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     try {
-      const code = "self.addEventListener('install',function(e){self.skipWaiting();});" +
-        "self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim());});" +
-        "self.addEventListener('fetch',function(e){});";
+      const code = `
+        self.addEventListener('install', e => self.skipWaiting());
+        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+        self.addEventListener('fetch', e => {
+          e.respondWith(
+            caches.match(e.request).then(response => response || fetch(e.request))
+          );
+        });
+      `;
       const sb = new Blob([code], {type:'text/javascript'});
       navigator.serviceWorker.register(URL.createObjectURL(sb), {scope:'./'}).catch(function(){});
     } catch(e){}
@@ -1515,15 +1484,13 @@ function init() {
 
   // Country picker
   $('ccBtn').addEventListener('click', openCountryModal);
-  $('setCountryRow').addEventListener('click', openCountryModal);
-  $('ccSearch').addEventListener('input', function () { renderCCList(this.value); });
+  $('setCountryRow').addEventListener('click', openCountryModal);$('ccSearch').addEventListener('input', function () { renderCCList(this.value); });
   $('ccList').addEventListener('click', function (e) {
     const item = e.target.closest('.cc-item');
     if (!item) return;
     settings.ccIso = item.dataset.iso;
     settings.cc = item.dataset.dial;
-    saveSettings(); updateCountryUI(); updatePreview();
-    $('ccModal').classList.remove('open');
+    saveSettings(); updateCountryUI(); updatePreview();$('ccModal').classList.remove('open');
   });
 
   // Settings
@@ -1589,10 +1556,8 @@ function init() {
   });
 
   // Name / Save Contact modal
-  $('nameSaveBtn').addEventListener('click', () => closeNameModal($('nameInput').value.trim()));
-  $('nameCancelBtn').addEventListener('click', () => closeNameModal(null));
-  $('nameCancelX').addEventListener('click', () => closeNameModal(null));
-  $('nameInput').addEventListener('keydown', function (e) {
+  $('nameSaveBtn').addEventListener('click', () => closeNameModal($('nameInput').value.trim()));$('nameCancelBtn').addEventListener('click', () => closeNameModal(null));
+  $('nameCancelX').addEventListener('click', () => closeNameModal(null));$('nameInput').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { e.preventDefault(); closeNameModal(this.value.trim()); }
   });
 
@@ -1634,9 +1599,7 @@ function init() {
 
   // Data management
   $('exportBtn').addEventListener('click', exportCSV);
-  $('exportBtn2').addEventListener('click', exportCSV);
-  $('importBtn').addEventListener('click', () => $('importFile').click());
-  $('importFile').addEventListener('change', function () {
+  $('exportBtn2').addEventListener('click', exportCSV);$('importBtn').addEventListener('click', () => $('importFile').click());$('importFile').addEventListener('change', function () {
     const file = this.files && this.files[0];
     if (!file) return;
     const reader = new FileReader();
@@ -1653,8 +1616,7 @@ function init() {
     reader.readAsText(file);
   });
 
-  $('clearHistBtn').addEventListener('click', clearHistory);
-  $('clearHistBtn2').addEventListener('click', clearHistory);
+  $('clearHistBtn').addEventListener('click', clearHistory);$('clearHistBtn2').addEventListener('click', clearHistory);
 
   $('resetAllBtn').addEventListener('click', function () {
     if (!confirm('Reset ALL settings, history and contacts? This cannot be undone.')) return;
@@ -1670,10 +1632,8 @@ function init() {
 
   // Install
   $('installBtn').addEventListener('click', doInstall);
-  $('btnTopInstall').addEventListener('click', doInstall);
-  $('bannerInstall').addEventListener('click', doInstall);
-  $('bannerClose').addEventListener('click', function () {
-    $('installBanner').classList.remove('show');
+  $('btnTopInstall').addEventListener('click', doInstall);$('bannerInstall').addEventListener('click', doInstall);
+  $('bannerClose').addEventListener('click', function () {$('installBanner').classList.remove('show');
   });
 
   window.addEventListener('beforeinstallprompt', function (e) {
@@ -1683,8 +1643,7 @@ function init() {
   });
   window.addEventListener('appinstalled', function () {
     installPrompt = null;
-    $('installBanner').classList.remove('show');
-    $('btnTopInstall').hidden = true;
+    $('installBanner').classList.remove('show');$('btnTopInstall').hidden = true;
     toast('App installed 🎉');
   });
 
