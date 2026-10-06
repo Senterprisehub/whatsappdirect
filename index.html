@@ -10,8 +10,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WA Direct">
 <title>WA Direct</title>
-<!-- Fixed: Using a data URI for the manifest to guarantee PWA detection across browsers -->
-<link id="manifestLink" rel="manifest" href='data:application/manifest+json,{
+
+<!-- Standardized inline Web App Manifest for instant PWA detection -->
+<link rel="manifest" href='data:application/manifest+json,{
   "name": "WA Direct — WhatsApp Messenger",
   "short_name": "WA Direct",
   "description": "Send WhatsApp messages instantly without saving the number.",
@@ -22,10 +23,16 @@
   "background_color": "#075E54",
   "theme_color": "#075E54",
   "icons": [
-    {"src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/><path d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/></svg>", "sizes": "192x192 512x512", "type": "image/svg+xml", "purpose": "any maskable"}
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/%3E%3Cpath d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/%3E%3C/svg%3E",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }'>
-<link id="appleIcon" rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/><path d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%2325D366%22/%3E%3Cpath d=%22M136 128h240c17.6 0 32 14.4 32 32v192c0 17.6-14.4 32-32 32H208l-72 64V352h-8c-17.6 0-32-14.4-32-32V160c0-17.6 14.4-32 32-32z%22 fill=%22%23fff%22/%3E%3C/svg%3E">
+
 <style>
 /* =========================================================
    THEME TOKENS — premium palette
@@ -106,7 +113,6 @@ body{
   display:flex;justify-content:center;min-height:100dvh;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   -webkit-tap-highlight-color:transparent;
-  font-feature-settings:"cv11","ss01";
 }
 #app{
   width:100%;max-width:540px;min-height:100dvh;
@@ -125,7 +131,6 @@ body{
   position:sticky;top:0;z-index:30;
   box-shadow:0 4px 20px rgba(7,94,84,.25), 0 1px 0 rgba(255,255,255,.06) inset;
 }
-html[data-theme="dark"] .topbar{box-shadow:0 4px 20px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.04) inset}
 .logo{
   width:38px;height:38px;border-radius:12px;flex:0 0 auto;
   background:linear-gradient(135deg,#25d366,#128c7e);
@@ -219,7 +224,7 @@ input:focus,textarea:focus,select:focus{
 .hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.55}
 .hint b{color:var(--text-soft);font-weight:700}
 
-/* App indicator strip (premium chip showing chosen app) */
+/* App indicator strip */
 .app-strip{
   display:flex;align-items:center;gap:10px;
   padding:11px 14px;border-radius:var(--radius-sm);
@@ -227,7 +232,6 @@ input:focus,textarea:focus,select:focus{
   border:1px solid rgba(37,211,102,.22);
   margin-bottom:15px;
 }
-html[data-theme="dark"] .app-strip{border-color:rgba(0,168,132,.28)}
 .app-strip .ico{
   width:30px;height:30px;border-radius:9px;flex:0 0 auto;
   display:grid;place-items:center;font-size:15px;
@@ -241,69 +245,50 @@ html[data-theme="dark"] .app-strip{border-color:rgba(0,168,132,.28)}
   background:transparent;border:1.5px solid var(--line-strong);
   border-radius:9px;padding:5px 11px;font-family:inherit;font-size:11.5px;
   font-weight:700;color:var(--text-soft);cursor:pointer;
-  transition:background .15s, border-color .15s;
 }
 .app-strip .change:hover{background:var(--panel-hover);border-color:var(--muted)}
 
-/* ============ BUBBLE ============ */
+/* Bubble & Preview */
 .bubble-wrap{display:flex;justify-content:flex-end;margin:0 0 14px;min-height:0}
 .bubble{
   background:var(--bubble);color:var(--text);
   padding:10px 14px;border-radius:14px 14px 4px 14px;
   max-width:85%;font-size:14px;line-height:1.5;
-  box-shadow:var(--shadow-sm);
-  white-space:pre-wrap;word-break:break-word;font-weight:500;
+  box-shadow:var(--shadow-sm);white-space:pre-wrap;word-break:break-word;font-weight:500;
 }
 .bubble .tick{font-size:11px;color:#53bdeb;margin-left:8px;vertical-align:bottom;font-weight:600}
 
-/* ============ PREVIEW ============ */
 .preview{
   background:var(--panel2);border-radius:var(--radius-sm);
   padding:12px 14px;font-size:11.5px;color:var(--text-soft);
   word-break:break-all;line-height:1.55;
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  margin-bottom:15px;
-  border:1px solid var(--line);
-  white-space:pre-wrap;
+  margin-bottom:15px;border:1px solid var(--line);white-space:pre-wrap;
 }
 
-/* ============ BUTTONS ============ */
+/* Buttons */
 .btn{
   display:flex;align-items:center;justify-content:center;gap:9px;
   width:100%;padding:15px;border-radius:14px;border:0;
   font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;
-  letter-spacing:.1px;
-  transition:transform .08s, box-shadow .15s, background .15s;
-  -webkit-appearance:none;
+  letter-spacing:.1px;transition:transform .08s, box-shadow .15s, background .15s;
 }
 .btn:active{transform:translateY(1px) scale(.99)}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none!important}
 .btn-primary{
   background:linear-gradient(180deg,#2ad46f 0%, var(--brand) 40%, var(--brand-2) 100%);
-  color:#fff;
-  box-shadow:var(--shadow-brand);
+  color:#fff;box-shadow:var(--shadow-brand);
 }
-.btn-primary:hover:not(:disabled){
-  box-shadow:0 6px 20px rgba(37,211,102,.42), inset 0 1px 0 rgba(255,255,255,.22);
-}
-.btn-ghost{
-  background:var(--panel2);border:1.5px solid var(--line-strong);color:var(--text);
-}
+.btn-ghost{background:var(--panel2);border:1.5px solid var(--line-strong);color:var(--text)}
 .btn-ghost:hover:not(:disabled){background:var(--panel-hover);border-color:var(--muted)}
-.btn-ghost:active{background:var(--panel-hover)}
-.btn-danger{
-  background:var(--danger-soft);border:1.5px solid rgba(224,69,91,.25);
-  color:var(--danger);
-}
-.btn-danger:hover{border-color:var(--danger)}
+.btn-danger{background:var(--danger-soft);border:1.5px solid rgba(224,69,91,.25);color:var(--danger)}
 .btn-row{display:flex;gap:9px;margin-top:10px}
 .btn-row .btn{flex:1;padding:12px;font-size:13.5px}
 
-/* ============ LIST / ROW ITEM ============ */
+/* Lists & Settings */
 .list{
   background:var(--panel);border-radius:var(--radius);
-  box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;
-  border:1px solid var(--line);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;border:1px solid var(--line);
 }
 .row-item{
   display:flex;align-items:center;gap:13px;
@@ -315,15 +300,13 @@ html[data-theme="dark"] .app-strip{border-color:rgba(0,168,132,.28)}
 .row-item .txt span{font-size:11.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.45}
 .row-item.clickable{cursor:pointer;transition:background .15s}
 .row-item.clickable:hover{background:var(--panel2)}
-.row-item.clickable:active{background:var(--panel-hover)}
 .row-item .val{font-size:13.5px;color:var(--muted);font-weight:700;white-space:nowrap}
 
-/* ============ SWITCH ============ */
+/* Switch */
 .switch{position:relative;display:inline-block;width:48px;height:28px;flex:0 0 auto}
 .switch input{opacity:0;width:0;height:0;position:absolute}
 .slider{
-  position:absolute;inset:0;background:#c2c8cc;border-radius:28px;
-  transition:background .2s;cursor:pointer;
+  position:absolute;inset:0;background:#c2c8cc;border-radius:28px;transition:background .2s;cursor:pointer;
 }
 .slider::before{
   content:"";position:absolute;height:22px;width:22px;left:3px;top:3px;
@@ -333,7 +316,6 @@ html[data-theme="dark"] .app-strip{border-color:rgba(0,168,132,.28)}
 .switch input:checked + .slider{background:var(--brand)}
 .switch input:checked + .slider::before{transform:translateX(20px)}
 
-/* ============ SEARCH ============ */
 .search-wrap{position:relative;margin-bottom:14px}
 .search-wrap input{padding-left:42px;height:46px;font-weight:600}
 .search-wrap::before{
@@ -341,200 +323,107 @@ html[data-theme="dark"] .app-strip{border-color:rgba(0,168,132,.28)}
   font-size:14px;opacity:.5;pointer-events:none;
 }
 
-/* ============ HISTORY / CONTACTS ============ */
 .chat-item,.contact-item{
   display:flex;gap:13px;padding:14px 15px;
-  border-bottom:1px solid var(--line);background:var(--panel);
-  transition:background .15s;
+  border-bottom:1px solid var(--line);background:var(--panel);transition:background .15s;
 }
 .chat-item:last-child,.contact-item:last-child{border-bottom:0}
 .contact-item{cursor:pointer;align-items:center}
 .contact-item:hover{background:var(--panel2)}
-.contact-item:active{background:var(--panel-hover)}
 
 .avatar{
   width:48px;height:48px;border-radius:50%;flex:0 0 auto;
   display:grid;place-items:center;color:#fff;font-weight:700;font-size:18px;
   background:linear-gradient(135deg,#25d366,#128c7e);
   box-shadow:0 2px 8px rgba(37,211,102,.28), inset 0 1px 0 rgba(255,255,255,.22);
-  letter-spacing:-.5px;
 }
 .chat-main{flex:1;min-width:0}
 .chat-top{display:flex;align-items:baseline;gap:8px}
-.chat-name{
-  font-size:15px;font-weight:700;flex:1;min-width:0;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  letter-spacing:-.1px;
-}
-.chat-time{font-size:11px;color:var(--muted);white-space:nowrap;flex:0 0 auto;font-weight:600}
-.chat-num{
-  font-size:12px;color:var(--muted);margin-top:3px;
-  font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;
-}
+.chat-name{font-size:15px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-time{font-size:11px;color:var(--muted);white-space:nowrap;font-weight:600}
+.chat-num{font-size:12px;color:var(--muted);margin-top:3px;font-family:monospace;font-weight:600}
 .chat-msg{
   font-size:13.5px;color:var(--text-soft);margin-top:5px;line-height:1.45;
-  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
-  overflow:hidden;word-break:break-word;white-space:pre-wrap;font-weight:500;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;
 }
-.chat-msg.empty{color:var(--muted);font-style:italic;opacity:.8}
 .chat-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
 .chat-actions button{
   font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:20px;
   border:1.5px solid var(--line-strong);background:var(--panel2);color:var(--text-soft);
   cursor:pointer;font-family:inherit;
-  transition:background .15s, border-color .15s, color .15s, transform .1s;
-  letter-spacing:.1px;
 }
-.chat-actions button:hover{
-  background:var(--panel-hover);border-color:var(--muted);color:var(--text);
-}
-.chat-actions button:active{transform:scale(.95)}
-.chat-actions button.danger{
-  color:var(--danger);border-color:rgba(224,69,91,.28);background:transparent;
-}
-.chat-actions button.danger:hover{background:var(--danger-soft);border-color:var(--danger)}
-.chat-actions button.saved{
-  color:var(--brand-dark);border-color:rgba(37,211,102,.4);
-  background:var(--brand-soft);
-}
-html[data-theme="dark"] .chat-actions button.saved{color:#7ee5c4}
+.chat-actions button.danger{color:var(--danger);border-color:rgba(224,69,91,.28);background:transparent}
+.chat-actions button.saved{color:var(--brand-dark);border-color:rgba(37,211,102,.4);background:var(--brand-soft)}
 
-.contact-del{
-  flex:0 0 auto;width:34px;height:34px;border-radius:10px;
-  border:1.5px solid var(--line-strong);background:transparent;
-  color:var(--muted);font-size:13px;font-family:inherit;font-weight:700;
-  cursor:pointer;display:grid;place-items:center;
-  transition:color .15s, border-color .15s, background .15s;
-}
-.contact-del:hover{color:var(--danger);border-color:var(--danger);background:var(--danger-soft)}
-
-/* ============ EMPTY STATE ============ */
-.empty-state{
-  text-align:center;padding:56px 24px;color:var(--muted);
-  font-size:14px;line-height:1.6;font-weight:500;
-}
+.empty-state{text-align:center;padding:56px 24px;color:var(--muted);font-size:14px;line-height:1.6;font-weight:500}
 .empty-state .big{
-  display:grid;place-items:center;
-  width:80px;height:80px;margin:0 auto 18px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, var(--brand-soft), transparent 70%);
-  font-size:38px;
-  box-shadow:inset 0 0 0 1.5px var(--line);
+  display:grid;place-items:center;width:80px;height:80px;margin:0 auto 18px;
+  border-radius:50%;background:radial-gradient(circle at 30% 30%, var(--brand-soft), transparent 70%);font-size:38px;
 }
 
-/* ============ TAB BAR ============ */
+/* Tabs */
 .tabbar{
   display:flex;background:var(--panel);border-top:1px solid var(--line);
-  padding-bottom:env(safe-area-inset-bottom);
-  position:sticky;bottom:0;z-index:30;
-  box-shadow:0 -4px 20px rgba(11,20,26,.06);
+  padding-bottom:env(safe-area-inset-bottom);position:sticky;bottom:0;z-index:30;
 }
-html[data-theme="dark"] .tabbar{box-shadow:0 -4px 20px rgba(0,0,0,.4)}
 .tab{
   flex:1;background:none;border:0;color:var(--muted);
   padding:10px 0 9px;display:flex;flex-direction:column;align-items:center;gap:4px;
-  font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;
-  transition:color .18s;letter-spacing:.2px;
-  position:relative;
+  font-size:10.5px;font-weight:700;cursor:pointer;font-family:inherit;position:relative;
 }
 .tab::before{
   content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:0;height:3px;border-radius:0 0 4px 4px;
-  background:var(--tab-active);
-  transition:width .22s cubic-bezier(.4,0,.2,1);
+  width:0;height:3px;border-radius:0 0 4px 4px;background:var(--tab-active);transition:width .2s;
 }
 .tab.active::before{width:32px}
-.tab svg{width:22px;height:22px;fill:currentColor;transition:transform .2s}
+.tab svg{width:22px;height:22px;fill:currentColor}
 .tab.active{color:var(--tab-active)}
-.tab.active svg{transform:translateY(-1px)}
-.tab:active svg{transform:scale(.9)}
 
-/* ============ MODAL / SHEET ============ */
+/* Modals */
 .modal{
   position:fixed;inset:0;background:rgba(11,20,26,.55);z-index:100;
-  display:none;align-items:flex-end;justify-content:center;
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);
 }
-.modal.open{display:flex;animation:fade .18s}
+.modal.open{display:flex}
 .sheet{
   background:var(--panel);width:100%;max-width:540px;max-height:88dvh;
-  border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;
-  box-shadow:var(--shadow-lg);
-  animation:slideUp .3s cubic-bezier(.2,.8,.3,1);
+  border-radius:22px 22px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow-lg);
 }
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
-.sheet-handle{
-  width:38px;height:4px;border-radius:2px;
-  background:var(--line-strong);
-  margin:10px auto 0;flex:0 0 auto;
-}
-.sheet-head{
-  display:flex;align-items:center;gap:10px;padding:14px 18px 15px;
-  border-bottom:1px solid var(--line);flex:0 0 auto;
-}
-.sheet-head h3{margin:0;font-size:16px;font-weight:700;flex:1;letter-spacing:-.1px}
-.sheet-head .icon-btn{
-  color:var(--muted);background:var(--panel2);
-  width:32px;height:32px;border-radius:10px;font-size:14px;
-}
-.sheet-head .icon-btn:hover{background:var(--panel-hover);color:var(--text)}
+.sheet-handle{width:38px;height:4px;border-radius:2px;background:var(--line-strong);margin:10px auto 0}
+.sheet-head{display:flex;align-items:center;gap:10px;padding:14px 18px 15px;border-bottom:1px solid var(--line)}
+.sheet-head h3{margin:0;font-size:16px;font-weight:700;flex:1}
 .sheet-body{padding:16px 18px;overflow-y:auto;flex:1}
-.sheet-foot{
-  padding:14px 18px;padding-bottom:calc(14px + env(safe-area-inset-bottom));
-  border-top:1px solid var(--line);display:flex;gap:10px;flex:0 0 auto;
-}
+.sheet-foot{padding:14px 18px;padding-bottom:calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;gap:10px}
 .sheet-foot .btn{flex:1;padding:14px}
 
-/* country list */
 .cc-list{overflow-y:auto;flex:1;padding:0}
-.cc-item{
-  display:flex;align-items:center;gap:13px;padding:13px 18px;
-  cursor:pointer;border-bottom:1px solid var(--line);
-  transition:background .15s;
-}
+.cc-item{display:flex;align-items:center;gap:13px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--line)}
 .cc-item:hover{background:var(--panel2)}
-.cc-item:active{background:var(--panel-hover)}
-.cc-item .flag{font-size:22px;line-height:1;flex:0 0 auto}
-.cc-item .cname{flex:1;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
-.cc-item .cdial{
-  font-size:13.5px;color:var(--muted);font-weight:700;
-  font-family:ui-monospace,Menlo,Consolas,monospace;
-}
+.cc-item .flag{font-size:22px}
+.cc-item .cname{flex:1;font-size:14.5px;font-weight:600}
+.cc-item .cdial{font-size:13.5px;color:var(--muted);font-weight:700;font-family:monospace}
 .cc-item.sel{background:var(--brand-soft)}
-.cc-item.sel .cname{color:var(--brand-dark);font-weight:700}
-html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
 
-/* install banner */
 #installBanner{
   display:none;position:fixed;left:50%;transform:translateX(-50%);
   bottom:calc(80px + env(safe-area-inset-bottom));
   width:min(512px,calc(100% - 24px));
   background:linear-gradient(135deg,var(--header-grad-1),var(--header-grad-3));
-  color:var(--header-text);border-radius:16px;
-  padding:14px 16px;align-items:center;gap:12px;z-index:60;
+  color:var(--header-text);border-radius:16px;padding:14px 16px;align-items:center;gap:12px;z-index:60;
   box-shadow:var(--shadow-lg);font-size:13.5px;
 }
-#installBanner.show{display:flex;animation:slideUp .35s}
+#installBanner.show{display:flex}
 #installBanner .txt{flex:1;line-height:1.4}
 #installBanner button{
   background:var(--brand);color:#04231a;border:0;border-radius:20px;
-  padding:9px 16px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit;
-  white-space:nowrap;
-  box-shadow:0 2px 8px rgba(37,211,102,.4);
+  padding:9px 16px;font-weight:800;font-size:12.5px;cursor:pointer;
 }
-#installBanner .x{background:transparent;color:inherit;padding:4px 6px;font-size:16px;box-shadow:none}
-
-/* scrollbar */
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(134,150,160,.35);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(134,150,160,.5)}
+#installBanner .x{background:transparent;color:inherit;padding:4px 6px;font-size:16px}
 </style>
 </head>
 <body>
 
 <div id="app">
-
   <header class="topbar">
     <div class="logo">💬</div>
     <div class="titles">
@@ -545,35 +434,28 @@ html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
   </header>
 
   <main id="main">
-
-    <!-- ============ COMPOSE ============ -->
+    <!-- COMPOSE -->
     <section class="view active" id="view-compose">
       <div class="card">
         <p class="card-title">New Message</p>
-
         <div class="field">
           <label for="phone">Phone number</label>
           <div class="phone-row">
             <button class="cc-chip" id="ccBtn" type="button">
               <span id="ccFlag">🇮🇳</span>
               <span id="ccDial">+91</span>
-              <span style="font-size:10px;opacity:.55">▼</span>
+              <span>▼</span>
             </button>
-            <input id="phone" type="tel" inputmode="tel" autocomplete="off"
-                   placeholder="98765 43210">
+            <input id="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="98765 43210">
           </div>
-          <div class="hint">
-            Full number: <b id="fullNum">—</b><br>
-            Start with <b>+</b> to type a full international number manually.
-          </div>
+          <div class="hint">Full number: <b id="fullNum">—</b></div>
         </div>
 
-        <!-- Chosen app indicator (read from Settings) -->
         <div class="app-strip" id="appStrip">
           <div class="ico">📱</div>
           <div class="body">
             <b id="appStripName">WhatsApp</b>
-            <span id="appStripHint">Change in Settings → Preferred WhatsApp app</span>
+            <span id="appStripHint">Change in Settings</span>
           </div>
           <button class="change" id="appStripChange" type="button">Change</button>
         </div>
@@ -596,27 +478,16 @@ html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
           <button class="btn btn-ghost" id="saveContactBtn">Save Contact</button>
         </div>
       </div>
-
-      <div class="card">
-        <p class="card-title">Quick Tips</p>
-        <div class="hint" style="font-size:12.5px;line-height:1.7">
-          • Every opened message is <b>auto-saved to History</b>.<br>
-          • Saved contacts stay <b>only on your device</b> until you delete them.<br>
-          • Use the <b>Contacts</b> tab to message or manage saved names.<br>
-          • Settings survive reboots and restarts.
-        </div>
-      </div>
     </section>
 
-    <!-- ============ HISTORY ============ -->
+    <!-- HISTORY -->
     <section class="view" id="view-history">
       <div class="search-wrap">
-        <input id="histSearch" type="search" placeholder="Search name, number or message…">
+        <input id="histSearch" type="search" placeholder="Search history…">
       </div>
       <div class="list" id="histList"></div>
       <div id="histEmpty" class="empty-state">
-        <span class="big">🗂️</span>
-        No messages yet.<br>Your sent messages will appear here.
+        <span class="big">🗂️</span>No messages yet.
       </div>
       <div id="histFooter" style="display:none">
         <div class="btn-row" style="margin-bottom:14px">
@@ -626,59 +497,33 @@ html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
       </div>
     </section>
 
-    <!-- ============ CONTACTS ============ -->
+    <!-- CONTACTS -->
     <section class="view" id="view-contacts">
       <div class="search-wrap">
         <input id="contactSearch" type="search" placeholder="Search contacts…">
       </div>
       <div class="list" id="contactList"></div>
       <div id="contactsEmpty" class="empty-state">
-        <span class="big">👥</span>
-        No contacts saved yet.<br>Tap <b>Save</b> on a history entry to add one.
+        <span class="big">👥</span>No contacts saved yet.
       </div>
     </section>
 
-    <!-- ============ SETTINGS ============ -->
+    <!-- SETTINGS -->
     <section class="view" id="view-settings">
-
       <div class="card">
         <p class="card-title">Defaults</p>
-
         <div class="row-item clickable" id="setCountryRow" style="padding-left:0;padding-right:0">
           <div class="txt"><b>Default country</b><span id="setCountryTxt">India (+91)</span></div>
           <span class="val" id="setCountryFlag">🇮🇳</span>
         </div>
-
         <div class="field" style="margin-top:16px">
           <label for="settingsApp">Preferred WhatsApp app</label>
           <select id="settingsApp">
-            <optgroup label="Official WhatsApp">
-              <option value="wa.me">Default — wa.me link (recommended)</option>
-              <option value="api">WhatsApp Web / api.whatsapp.com</option>
-              <option value="scheme">App scheme — whatsapp://</option>
-              <option value="android-wa">Android · WhatsApp (com.whatsapp)</option>
-              <option value="android-biz">Android · WhatsApp Business (com.whatsapp.w4b)</option>
-            </optgroup>
-            <optgroup label="Clones / Mods (Android only)">
-              <option value="gb">GB WhatsApp</option>
-              <option value="plus">WhatsApp Plus</option>
-              <option value="fm">FM WhatsApp</option>
-              <option value="yo">Yo WhatsApp</option>
-              <option value="og">OG WhatsApp</option>
-              <option value="aero">WhatsApp Aero</option>
-              <option value="mb">MB WhatsApp</option>
-              <option value="ns">NS WhatsApp</option>
-              <option value="jt">JT WhatsApp</option>
-              <option value="custom">Custom package name…</option>
-            </optgroup>
+            <option value="wa.me">Default — wa.me link (recommended)</option>
+            <option value="api">WhatsApp Web / api.whatsapp.com</option>
+            <option value="scheme">App scheme — whatsapp://</option>
+            <option value="android-wa">Android · WhatsApp</option>
           </select>
-          <div class="hint">Every message opens this app <b>directly</b> with the number & text.</div>
-        </div>
-
-        <div class="field" id="customPkgFieldSet" style="display:none">
-          <label for="customPkgSet">Custom package name</label>
-          <input id="customPkgSet" type="text" placeholder="com.example.whatsapp" autocomplete="off">
-          <div class="hint">Android package name of your clone (e.g. <b>com.gbwhatsapp</b>).</div>
         </div>
       </div>
 
@@ -695,55 +540,22 @@ html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
       </div>
 
       <div class="card">
-        <p class="card-title">Behaviour</p>
-        <div class="row-item" style="padding-left:0;padding-right:0">
-          <div class="txt"><b>Confirm before delete</b><span>Ask before removing a history entry or contact</span></div>
-          <label class="switch"><input type="checkbox" id="confirmDelSwitch"><span class="slider"></span></label>
-        </div>
-      </div>
-
-      <div class="card">
-        <p class="card-title">Data</p>
-        <div class="btn-row" style="margin-top:0">
-          <button class="btn btn-ghost" id="exportBtn">⬇ Export CSV</button>
-          <button class="btn btn-ghost" id="importBtn">⬆ Import CSV</button>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-danger" id="clearHistBtn">Clear History</button>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-danger" id="resetAllBtn">Reset Everything</button>
-        </div>
-        <input type="file" id="importFile" accept=".csv,text/csv" hidden>
-        <div class="hint" style="margin-top:12px;line-height:1.6">
-          CSV columns: <b>id, name, number, message, app, createdAt, count</b>.<br>
-          You can edit the file in Excel / Google Sheets and re-import it.
-        </div>
-      </div>
-
-      <div class="card">
-        <p class="card-title">App</p>
+        <p class="card-title">App Installation</p>
         <button class="btn btn-primary" id="installBtn">📲 Install App</button>
-        <div class="hint" style="margin-top:14px;line-height:1.6">
-          <b>iPhone / iPad:</b> Share → "Add to Home Screen".<br>
-          <b>Android:</b> menu ⋮ → "Install app".<br>
-          <b>Desktop:</b> install icon in address bar.
-        </div>
-        <div class="hint" style="margin-top:14px;opacity:.7">
-          WA Direct v2.1 · All data stays on your device.
+        <div class="hint" style="margin-top:10px">
+          *Note: Automatic install prompts require running over <b>HTTPS</b> or <b>localhost</b>.
         </div>
       </div>
-
     </section>
   </main>
 
   <nav class="tabbar">
     <button class="tab active" data-view="compose">
-      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>
       <span>New</span>
     </button>
     <button class="tab" data-view="history">
-      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 117 7 6.96 6.96 0 01-4.95-2.05l-1.42 1.42A9 9 0 1013 3zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 117 7z"/></svg>
       <span>History</span>
     </button>
     <button class="tab" data-view="contacts">
@@ -757,1024 +569,67 @@ html[data-theme="dark"] .cc-item.sel .cname{color:#7ee5c4}
   </nav>
 
   <div id="installBanner">
-    <div class="txt">Install <b>WA Direct</b> for quick one-tap access.</div>
+    <div class="txt">Install <b>WA Direct</b> for quick access.</div>
     <button id="bannerInstall">Install</button>
     <button class="x" id="bannerClose">✕</button>
-  </div>
-</div>
-
-<!-- Country modal -->
-<div class="modal" id="ccModal">
-  <div class="sheet" style="max-height:80dvh">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>Select Country</h3>
-      <button class="icon-btn" data-close="ccModal">✕</button>
-    </div>
-    <div style="padding:12px 18px 10px">
-      <input id="ccSearch" type="search" placeholder="Search country or dial code…">
-    </div>
-    <div class="cc-list" id="ccList"></div>
-  </div>
-</div>
-
-<!-- Edit modal -->
-<div class="modal" id="editModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>Edit Entry</h3>
-      <button class="icon-btn" data-close="editModal">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="field">
-        <label for="editName">Contact name</label>
-        <input id="editName" type="text" placeholder="Optional name">
-      </div>
-      <div class="field">
-        <label for="editNumber">Number (with country code, digits only)</label>
-        <input id="editNumber" type="tel" inputmode="numeric" placeholder="919876543210">
-      </div>
-      <div class="field">
-        <label for="editMsg">Message</label>
-        <textarea id="editMsg" rows="5" placeholder="Message text…"></textarea>
-      </div>
-    </div>
-    <div class="sheet-foot">
-      <button class="btn btn-ghost" data-close="editModal">Cancel</button>
-      <button class="btn btn-primary" id="editSaveBtn">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Save Contact modal -->
-<div class="modal" id="nameModal">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <h3>Save Contact</h3>
-      <button class="icon-btn" id="nameCancelX">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div class="field">
-        <label for="nameInput">Contact name</label>
-        <input id="nameInput" type="text" placeholder="e.g. John Doe">
-      </div>
-      <div class="hint" id="nameNumberHint"></div>
-      <div class="hint" style="margin-top:10px">
-        Saved contacts live <b>only on this device</b> until you delete them.
-      </div>
-    </div>
-    <div class="sheet-foot">
-      <button class="btn btn-ghost" id="nameCancelBtn">Cancel</button>
-      <button class="btn btn-primary" id="nameSaveBtn">Save</button>
-    </div>
   </div>
 </div>
 
 <script>
 (function () {
 'use strict';
-
-/* =========================================================
-   1. CONSTANTS
-   ========================================================= */
-const K_SET      = 'wadirect.settings.v8';
-const K_HIST     = 'wadirect.history.v8';
-const K_CONTACTS = 'wadirect.contacts.v1';
-
-const DEFAULT_SETTINGS = {
-  ccIso: 'IN',
-  cc: '91',
-  app: 'wa.me',
-  customPkg: '',
-  theme: 'light',
-  confirmDelete: true
-};
-
-const CLONE_PKGS = {
-  gb:'com.gbwhatsapp', plus:'com.whatsapp.plus', fm:'com.fmwhatsapp',
-  yo:'com.yowhatsapp', og:'com.ogwhatsapp', aero:'com.whatsapp.aero',
-  mb:'com.mbwhatsapp', ns:'com.ns.whatsapp', jt:'com.jtwhatsapp'
-};
-
-const COUNTRIES = [
-["AF","Afghanistan","93"],["AL","Albania","355"],["DZ","Algeria","213"],["AD","Andorra","376"],
-["AO","Angola","244"],["AR","Argentina","54"],["AM","Armenia","374"],["AU","Australia","61"],
-["AT","Austria","43"],["AZ","Azerbaijan","994"],["BH","Bahrain","973"],["BD","Bangladesh","880"],
-["BY","Belarus","375"],["BE","Belgium","32"],["BJ","Benin","229"],["BT","Bhutan","975"],
-["BO","Bolivia","591"],["BA","Bosnia and Herzegovina","387"],["BW","Botswana","267"],["BR","Brazil","55"],
-["BN","Brunei","673"],["BG","Bulgaria","359"],["BF","Burkina Faso","226"],["BI","Burundi","257"],
-["KH","Cambodia","855"],["CM","Cameroon","237"],["CA","Canada","1"],["CV","Cape Verde","238"],
-["CF","Central African Republic","236"],["TD","Chad","235"],["CL","Chile","56"],["CN","China","86"],
-["CO","Colombia","57"],["KM","Comoros","269"],["CG","Congo","242"],["CD","Congo (DRC)","243"],
-["CR","Costa Rica","506"],["CI","Côte d'Ivoire","225"],["HR","Croatia","385"],["CU","Cuba","53"],
-["CY","Cyprus","357"],["CZ","Czechia","420"],["DK","Denmark","45"],["DJ","Djibouti","253"],
-["DM","Dominica","1767"],["DO","Dominican Republic","1809"],["EC","Ecuador","593"],["EG","Egypt","20"],
-["SV","El Salvador","503"],["GQ","Equatorial Guinea","240"],["ER","Eritrea","291"],["EE","Estonia","372"],
-["ET","Ethiopia","251"],["FJ","Fiji","679"],["FI","Finland","358"],["FR","France","33"],
-["GA","Gabon","241"],["GM","Gambia","220"],["GE","Georgia","995"],["DE","Germany","49"],
-["GH","Ghana","233"],["GR","Greece","30"],["GD","Grenada","1473"],["GT","Guatemala","502"],
-["GN","Guinea","224"],["GY","Guyana","592"],["HT","Haiti","509"],["HN","Honduras","504"],
-["HK","Hong Kong","852"],["HU","Hungary","36"],["IS","Iceland","354"],["IN","India","91"],
-["ID","Indonesia","62"],["IR","Iran","98"],["IQ","Iraq","964"],["IE","Ireland","353"],
-["IL","Israel","972"],["IT","Italy","39"],["JM","Jamaica","1876"],["JP","Japan","81"],
-["JO","Jordan","962"],["KZ","Kazakhstan","7"],["KE","Kenya","254"],["KW","Kuwait","965"],
-["KG","Kyrgyzstan","996"],["LA","Laos","856"],["LV","Latvia","371"],["LB","Lebanon","961"],
-["LS","Lesotho","266"],["LR","Liberia","231"],["LY","Libya","218"],["LI","Liechtenstein","423"],
-["LT","Lithuania","370"],["LU","Luxembourg","352"],["MO","Macau","853"],["MG","Madagascar","261"],
-["MW","Malawi","265"],["MY","Malaysia","60"],["MV","Maldives","960"],["ML","Mali","223"],
-["MT","Malta","356"],["MR","Mauritania","222"],["MU","Mauritius","230"],["MX","Mexico","52"],
-["MD","Moldova","373"],["MC","Monaco","377"],["MN","Mongolia","976"],["ME","Montenegro","382"],
-["MA","Morocco","212"],["MZ","Mozambique","258"],["MM","Myanmar","95"],["NA","Namibia","264"],
-["NP","Nepal","977"],["NL","Netherlands","31"],["NZ","New Zealand","64"],["NI","Nicaragua","505"],
-["NE","Niger","227"],["NG","Nigeria","234"],["KP","North Korea","850"],["MK","North Macedonia","389"],
-["NO","Norway","47"],["OM","Oman","968"],["PK","Pakistan","92"],["PS","Palestine","970"],
-["PA","Panama","507"],["PG","Papua New Guinea","675"],["PY","Paraguay","595"],["PE","Peru","51"],
-["PH","Philippines","63"],["PL","Poland","48"],["PT","Portugal","351"],["PR","Puerto Rico","1787"],
-["QA","Qatar","974"],["RO","Romania","40"],["RU","Russia","7"],["RW","Rwanda","250"],
-["SA","Saudi Arabia","966"],["SN","Senegal","221"],["RS","Serbia","381"],["SC","Seychelles","248"],
-["SL","Sierra Leone","232"],["SG","Singapore","65"],["SK","Slovakia","421"],["SI","Slovenia","386"],
-["SO","Somalia","252"],["ZA","South Africa","27"],["KR","South Korea","82"],["SS","South Sudan","211"],
-["ES","Spain","34"],["LK","Sri Lanka","94"],["SD","Sudan","249"],["SR","Suriname","597"],
-["SE","Sweden","46"],["CH","Switzerland","41"],["SY","Syria","963"],["TW","Taiwan","886"],
-["TJ","Tajikistan","992"],["TZ","Tanzania","255"],["TH","Thailand","66"],["TG","Togo","228"],
-["TO","Tonga","676"],["TT","Trinidad and Tobago","1868"],["TN","Tunisia","216"],["TR","Turkey","90"],
-["TM","Turkmenistan","993"],["UG","Uganda","256"],["UA","Ukraine","380"],["AE","United Arab Emirates","971"],
-["GB","United Kingdom","44"],["US","United States","1"],["UY","Uruguay","598"],["UZ","Uzbekistan","998"],
-["VE","Venezuela","58"],["VN","Vietnam","84"],["YE","Yemen","967"],["ZM","Zambia","260"],
-["ZW","Zimbabwe","263"]
-];
-
-/* =========================================================
-   2. HELPERS
-   ========================================================= */
-const $  = id => document.getElementById(id);
-const $$ = sel => Array.prototype.slice.call(document.querySelectorAll(sel));
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const digits = s => String(s || '').replace(/\D+/g, '');
-const uid = () => 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-
-function flagOf(iso) {
-  if (!iso || iso.length !== 2) return '🏳️';
-  try { return iso.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0))); }
-  catch (e) { return '🏳️'; }
-}
-const store = {
-  get(k,f){ try { const v = localStorage.getItem(k); return v == null ? f : JSON.parse(v); } catch(e){ return f; } },
-  set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } },
-  del(k){ try { localStorage.removeItem(k); } catch(e){} }
-};
-function fmtTime(ts) {
-  const d = new Date(ts), now = new Date();
-  const time = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  if (d.toDateString() === now.toDateString()) return time;
-  const y = new Date(now); y.setDate(now.getDate()-1);
-  if (d.toDateString() === y.toDateString()) return 'Yesterday ' + time;
-  return d.toLocaleDateString([], {day:'2-digit', month:'short'}) + ' ' + time;
-}
-function fmtNumber(num) {
-  const s = String(num || '');
-  if (s.length <= 4) return '+' + s;
-  if (s.length <= 7) return '+' + s.slice(0, s.length-4) + ' ' + s.slice(-4);
-  return '+' + s.slice(0, s.length-10) + ' ' + s.slice(-10, -5) + ' ' + s.slice(-5);
-}
-
-/* =========================================================
-   3. CSV
-   ========================================================= */
-function csvEscape(v) {
-  const s = String(v == null ? '' : v);
-  if (/[",\r\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
-  return s;
-}
-function csvParse(text) {
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-  const rows=[]; let row=[], field='', i=0, inQ=false; const n=text.length;
-  while (i<n) {
-    const c = text[i];
-    if (inQ) {
-      if (c === '"') { if (text[i+1]==='"') { field+='"'; i+=2; continue; } inQ=false; i++; continue; }
-      field += c; i++; continue;
-    }
-    if (c === '"') { inQ = true; i++; continue; }
-    if (c === ',') { row.push(field); field=''; i++; continue; }
-    if (c === '\r') { i++; continue; }
-    if (c === '\n') { row.push(field); field=''; rows.push(row); row=[]; i++; continue; }
-    field += c; i++;
-  }
-  if (field !== '' || row.length) { row.push(field); rows.push(row); }
-  return rows;
-}
-
-/* =========================================================
-   4. STATE
-   ========================================================= */
-let settings = Object.assign({}, DEFAULT_SETTINGS, store.get(K_SET, {}));
-let history  = store.get(K_HIST, []);
-if (!Array.isArray(history)) history = [];
-let contacts = store.get(K_CONTACTS, {});
-if (typeof contacts !== 'object' || Array.isArray(contacts) || contacts === null) contacts = {};
-
-let editingId = null;
+const $ = id => document.getElementById(id);
 let installPrompt = null;
-let nameResolver  = null;
 
-/* =========================================================
-   5. THEME
-   ========================================================= */
-function effectiveTheme() {
-  if (settings.theme === 'system') {
-    return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
-  }
-  return settings.theme === 'dark' ? 'dark' : 'light';
-}
-function applyTheme() {
-  const t = effectiveTheme();
-  document.documentElement.setAttribute('data-theme', t);
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t === 'dark' ? '#111b21' : '#075e54');
-}
-if (window.matchMedia) {
-  try { window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', () => { if (settings.theme === 'system') applyTheme(); }); } catch(e){}
-}
-function saveSettings(){ store.set(K_SET, settings); }
-function saveHistory(){ store.set(K_HIST, history); }
-function saveContacts(){ store.set(K_CONTACTS, contacts); }
-
-/* =========================================================
-   6. CONTACTS
-   ========================================================= */
-function getContactName(number) {
-  const c = contacts[number];
-  return c && c.name ? c.name : '';
-}
-function contactExists(number) {
-  return !!contacts[number];
-}
-function saveContact(number, name) {
-  contacts[number] = { name: name, savedAt: Date.now() };
-  saveContacts();
-}
-function deleteContact(number) {
-  delete contacts[number];
-  saveContacts();
-}
-
-/* =========================================================
-   7. APP LABELS
-   ========================================================= */
-function appLabel(app) {
-  if (CLONE_PKGS[app]) {
-    const n = { gb:'GB WhatsApp', plus:'WhatsApp Plus', fm:'FM WhatsApp',
-      yo:'Yo WhatsApp', og:'OG WhatsApp', aero:'WhatsApp Aero',
-      mb:'MB WhatsApp', ns:'NS WhatsApp', jt:'JT WhatsApp' };
-    return n[app] || 'WhatsApp';
-  }
-  if (app === 'custom') {
-    const pkg = (settings.customPkg || '').trim();
-    return pkg ? ('Custom · ' + pkg) : 'Custom package';
-  }
-  if (app === 'android-wa') return 'WhatsApp';
-  if (app === 'android-biz') return 'WhatsApp Business';
-  if (app === 'scheme') return 'WhatsApp (app scheme)';
-  if (app === 'api') return 'WhatsApp Web';
-  return 'WhatsApp';
-}
-function appIcon(app) {
-  if (CLONE_PKGS[app]) return '🧩';
-  if (app === 'android-biz') return '💼';
-  if (app === 'api') return '🌐';
-  if (app === 'scheme') return '🔗';
-  if (app === 'custom') return '⚙️';
-  return '📱';
-}
-
-/* =========================================================
-   8. LINK BUILDING
-   ========================================================= */
-function buildLink(app, number, message) {
-  const t = message ? encodeURIComponent(message) : '';
-  const waMe = 'https://wa.me/' + number + (t ? '?text=' + t : '');
-
-  if (CLONE_PKGS[app]) {
-    return 'intent://send?phone=' + number + (t ? '&text=' + t : '') +
-           '#Intent;scheme=whatsapp;package=' + CLONE_PKGS[app] +
-           ';S.browser_fallback_url=' + encodeURIComponent(waMe) + ';end';
-  }
-  if (app === 'custom') {
-    const pkg = (settings.customPkg || '').trim();
-    if (pkg) {
-      return 'intent://send?phone=' + number + (t ? '&text=' + t : '') +
-             '#Intent;scheme=whatsapp;package=' + pkg +
-             ';S.browser_fallback_url=' + encodeURIComponent(waMe) + ';end';
-    }
-    return waMe;
-  }
-  switch (app) {
-    case 'api':
-      return 'https://api.whatsapp.com/send?phone=' + number + (t ? '&text=' + t : '');
-    case 'scheme':
-      return 'whatsapp://send?phone=' + number + (t ? '&text=' + t : '');
-    case 'android-wa':
-      return 'intent://send?phone=' + number + (t ? '&text=' + t : '') +
-             '#Intent;scheme=whatsapp;package=com.whatsapp' +
-             ';S.browser_fallback_url=' + encodeURIComponent(waMe) + ';end';
-    case 'android-biz':
-      return 'intent://send?phone=' + number + (t ? '&text=' + t : '') +
-             '#Intent;scheme=whatsapp;package=com.whatsapp.w4b' +
-             ';S.browser_fallback_url=' + encodeURIComponent(waMe) + ';end';
-    default:
-      return waMe;
-  }
-}
-
-function openLink(url) {
-  try {
-    if (/^https?:/i.test(url)) {
-      const w = window.open(url, '_blank', 'noopener,noreferrer');
-      if (!w) window.location.href = url;
-      return;
-    }
-    const a = document.createElement('a');
-    a.href = url; a.rel = 'noopener'; a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => { try { a.remove(); } catch(e){} }, 800);
-  } catch (e) {
-    try { window.location.href = url; } catch (e2) {}
-  }
-}
-
-function fullNumber() {
-  const raw = $('phone').value.trim();
-  if (!raw) return '';
-  if (raw.charAt(0) === '+') return digits(raw);
-  let d = digits(raw).replace(/^0+/, '');
-  if (!d) return '';
-  return digits(settings.cc) + d;
-}
-
-/* =========================================================
-   9. PREVIEW
-   ========================================================= */
-function updatePreview() {
-  const num = fullNumber();
-  $('fullNum').textContent = num ? fmtNumber(num) : '—';
-  const msg = $('msg').value.trim();
-
-  if (msg) {
-    $('bubbleWrap').style.display = 'flex';
-    $('bubbleText').innerHTML = esc(msg) + '<span class="tick">✓✓</span>';
-  } else {
-    $('bubbleWrap').style.display = 'none';
-  }
-
-  $('preview').textContent = num
-    ? buildLink(settings.app, num, msg)
-    : 'Enter a number to see the link…';
-
-  $('openBtn').disabled = !num;
-}
-
-/* =========================================================
-   10. APP STRIP (read-only indicator on compose)
-   ========================================================= */
-function updateAppStrip() {
-  $('appStripName').textContent = appLabel(settings.app);
-  const hint = settings.app === 'custom'
-    ? ((settings.customPkg || '').trim()
-        ? 'Custom package · ' + settings.customPkg
-        : 'Set the custom package in Settings')
-    : 'Change in Settings → Preferred WhatsApp app';
-  $('appStripHint').textContent = hint;
-  const ico = document.querySelector('#appStrip .ico');
-  if (ico) ico.textContent = appIcon(settings.app);
-}
-
-/* =========================================================
-   11. COUNTRY PICKER
-   ========================================================= */
-function currentCountry() {
-  return COUNTRIES.find(c => c[0] === settings.ccIso)
-      || COUNTRIES.find(c => c[2] === settings.cc)
-      || COUNTRIES[0];
-}
-function updateCountryUI() {
-  const c = currentCountry();
-  settings.ccIso = c[0]; settings.cc = c[2];
-  $('ccFlag').textContent = flagOf(c[0]);
-  $('ccDial').textContent = '+' + c[2];
-  $('setCountryTxt').textContent = c[1] + ' (+' + c[2] + ')';
-  $('setCountryFlag').textContent = flagOf(c[0]);
-}
-function renderCCList(query) {
-  const q = (query||'').trim().toLowerCase();
-  const list = $('ccList');
-  const cur = settings.ccIso;
-  const items = COUNTRIES.filter(c => {
-    if (!q) return true;
-    return c[1].toLowerCase().includes(q) || c[2].includes(q.replace('+','')) || c[0].toLowerCase() === q;
-  });
-  if (!items.length) { list.innerHTML = '<div class="empty-state" style="padding:40px 20px"><span class="big">🔍</span>No country found.</div>'; return; }
-  list.innerHTML = items.map(c =>
-    '<div class="cc-item' + (c[0] === cur ? ' sel' : '') + '" data-iso="' + c[0] + '" data-dial="' + c[2] + '">' +
-      '<span class="flag">' + flagOf(c[0]) + '</span>' +
-      '<span class="cname">' + esc(c[1]) + '</span>' +
-      '<span class="cdial">+' + c[2] + '</span>' +
-    '</div>').join('');
-}
-function openCountryModal() {
-  $('ccSearch').value = ''; renderCCList('');
-  $('ccModal').classList.add('open');
-  setTimeout(() => $('ccSearch').focus(), 80);
-}
-
-/* =========================================================
-   12. VIEWS
-   ========================================================= */
-function showView(name) {
-  $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
-  $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === name));
-  $('main').scrollTop = 0;
-  if (name === 'history') renderHistory();
-  if (name === 'contacts') renderContacts();
-}
-
-/* =========================================================
-   13. HISTORY
-   ========================================================= */
-function renderHistory() {
-  const q = ($('histSearch').value || '').trim().toLowerCase();
-  let items = history.slice().sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-
-  if (q) {
-    items = items.filter(h => {
-      const name = (getContactName(h.number) || h.name || '').toLowerCase();
-      return name.includes(q) ||
-        String(h.number||'').includes(q.replace(/\D/g,'')) ||
-        (h.message||'').toLowerCase().includes(q);
-    });
-  }
-
-  const list = $('histList');
-  if (!items.length) {
-    list.innerHTML = '';
-    $('histEmpty').style.display = 'block';
-    $('histFooter').style.display = history.length ? 'block' : 'none';
-    return;
-  }
-  $('histEmpty').style.display = 'none';
-  $('histFooter').style.display = 'block';
-
-  list.innerHTML = items.map(h => {
-    const contactName = getContactName(h.number) || h.name || '';
-    const display = contactName || fmtNumber(h.number);
-    const initial = (contactName ? contactName.charAt(0) : (h.number||'?').charAt(0)).toUpperCase();
-    const hasContact = contactExists(h.number);
-    const msg = h.message ? esc(h.message)
-      : '<span class="empty-state" style="padding:0;font-size:12px">No message</span>';
-    return '' +
-    '<div class="chat-item" data-id="' + h.id + '">' +
-      '<div class="avatar">' + esc(initial) + '</div>' +
-      '<div class="chat-main">' +
-        '<div class="chat-top">' +
-          '<span class="chat-name">' + esc(display) + '</span>' +
-          '<span class="chat-time">' + fmtTime(h.createdAt) + '</span>' +
-        '</div>' +
-        '<div class="chat-num">' + fmtNumber(h.number) + (h.count > 1 ? ' · ' + h.count + '×' : '') + '</div>' +
-        '<div class="chat-msg' + (h.message ? '' : ' empty') + '">' + msg + '</div>' +
-        '<div class="chat-actions">' +
-          '<button data-act="open">↗ Open</button>' +
-          '<button data-act="edit">✎ Edit</button>' +
-          '<button data-act="save"' + (hasContact ? ' class="saved"' : '') + '>' +
-            (hasContact ? '✓ Saved' : '👤 Save') +
-          '</button>' +
-          '<button data-act="copy">⧉ Copy</button>' +
-          '<button data-act="del" class="danger">🗑 Delete</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function addToHistory(number, message, app, name) {
-  const now = Date.now();
-  const existing = history.find(h =>
-    h.number === number && (h.message||'') === (message||'') &&
-    (now - (h.createdAt||0)) < 5*60*1000);
-  if (existing) {
-    existing.count = (existing.count || 1) + 1;
-    existing.createdAt = now; existing.app = app;
-    saveHistory(); return existing;
-  }
-  const entry = {
-    id: uid(), name: name || '', number, message: message || '',
-    app, createdAt: now, count: 1
-  };
-  history.push(entry); saveHistory(); return entry;
-}
-
-/* =========================================================
-   14. CONTACTS RENDERING
-   ========================================================= */
-function renderContacts() {
-  const q = ($('contactSearch').value || '').trim().toLowerCase();
-
-  const entries = Object.keys(contacts).map(num => ({
-    number: num,
-    name: contacts[num].name || '',
-    savedAt: contacts[num].savedAt || 0
-  })).filter(c => {
-    if (!q) return true;
-    return c.name.toLowerCase().includes(q) || c.number.includes(q.replace(/\D/g,''));
-  }).sort((a,b) => a.name.localeCompare(b.name, undefined, {sensitivity:'base'}));
-
-  const list = $('contactList');
-  if (!entries.length) {
-    list.innerHTML = '';
-    $('contactsEmpty').style.display = 'block';
-    return;
-  }
-  $('contactsEmpty').style.display = 'none';
-
-  list.innerHTML = entries.map(c => {
-    const initial = (c.name || '?').charAt(0).toUpperCase();
-    return '' +
-    '<div class="contact-item" data-number="' + c.number + '">' +
-      '<div class="avatar">' + esc(initial) + '</div>' +
-      '<div class="chat-main">' +
-        '<div class="chat-name">' + esc(c.name) + '</div>' +
-        '<div class="chat-num">' + fmtNumber(c.number) + '</div>' +
-      '</div>' +
-      '<button class="contact-del" data-act="del" title="Delete contact">✕</button>' +
-    '</div>';
-  }).join('');
-}
-
-/* =========================================================
-   15. OPEN FROM COMPOSE
-   ========================================================= */
-function openFromCompose() {
-  const num = fullNumber();
-  if (!num) return;
-
-  const msg = $('msg').value.trim();
-  const app = settings.app;   // single source of truth
-
-  addToHistory(num, msg, app, '');
-  renderHistory();
-
-  openLink(buildLink(app, num, msg));
-  toast('Opening ' + appLabel(app) + '…');
-}
-
-/* =========================================================
-   16. NAME PROMPT
-   ========================================================= */
-function askName(def, hint) {
-  return new Promise(resolve => {
-    nameResolver = resolve;
-    $('nameInput').value = def || '';
-    $('nameNumberHint').textContent = hint ? 'Number: ' + fmtNumber(hint) : '';
-    $('nameModal').classList.add('open');
-    setTimeout(() => { $('nameInput').focus(); $('nameInput').select(); }, 120);
-  });
-}
-function closeNameModal(v) {
-  $('nameModal').classList.remove('open');
-  if (nameResolver) { nameResolver(v); nameResolver = null; }
-}
-
-/* =========================================================
-   17. EDIT MODAL
-   ========================================================= */
-function openEdit(id) {
-  const item = history.find(h => h.id === id);
-  if (!item) return;
-  editingId = id;
-  $('editName').value = getContactName(item.number) || item.name || '';
-  $('editNumber').value = item.number || '';
-  $('editMsg').value = item.message || '';
-  $('editModal').classList.add('open');
-}
-
-/* =========================================================
-   18. TOAST
-   ========================================================= */
-let toastEl = null;
-function toast(msg) {
-  if (!toastEl) {
-    toastEl = document.createElement('div');
-    toastEl.style.cssText =
-      'position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));' +
-      'transform:translateX(-50%);background:rgba(11,20,26,.92);color:#fff;' +
-      'padding:12px 20px;border-radius:24px;font-size:13px;z-index:200;' +
-      'pointer-events:none;transition:opacity .28s, transform .28s;font-weight:600;' +
-      'max-width:90%;text-align:center;line-height:1.45;' +
-      'box-shadow:0 8px 24px rgba(0,0,0,.3);backdrop-filter:blur(8px);';
-    document.body.appendChild(toastEl);
-  }
-  toastEl.textContent = msg;
-  toastEl.style.opacity = '1';
-  toastEl.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(toastEl._t);
-  toastEl._t = setTimeout(() => {
-    toastEl.style.opacity = '0';
-    toastEl.style.transform = 'translateX(-50%) translateY(6px)';
-  }, 2400);
-}
-
-/* =========================================================
-   19. PWA (Fixed Service Worker implementation)
-   ========================================================= */
-function setupPWA() {
-  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-    try {
-      const code = `
-        self.addEventListener('install', e => self.skipWaiting());
-        self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(response => response || fetch(e.request))
-          );
-        });
-      `;
-      const sb = new Blob([code], {type:'text/javascript'});
-      navigator.serviceWorker.register(URL.createObjectURL(sb), {scope:'./'}).catch(function(){});
-    } catch(e){}
-  }
-}
-
-/* =========================================================
-   20. SYNC SETTINGS UI
-   ========================================================= */
-function syncUIFromSettings() {
-  updateCountryUI();
-  $('settingsApp').value = settings.app;
-  $('themeSel').value = settings.theme;
-  $('confirmDelSwitch').checked = !!settings.confirmDelete;
-  $('customPkgSet').value = settings.customPkg || '';
-  $('customPkgFieldSet').style.display = settings.app === 'custom' ? 'block' : 'none';
-  updateAppStrip();
-}
-
-/* =========================================================
-   21. INIT
-   ========================================================= */
-function init() {
-  applyTheme();
-  syncUIFromSettings();
-  updatePreview();
-  renderHistory();
-  renderContacts();
-  setupPWA();
-
-  $$('.tab').forEach(t => t.addEventListener('click', () => showView(t.dataset.view)));
-
-  // Compose
-  $('phone').addEventListener('input', updatePreview);
-  $('msg').addEventListener('input', updatePreview);
-
-  // App strip "Change" jumps to Settings
-  $('appStripChange').addEventListener('click', () => {
-    showView('settings');
-    setTimeout(() => {
-      const el = $('settingsApp');
-      el.focus();
-      try { el.scrollIntoView({behavior:'smooth', block:'center'}); } catch(e){}
-    }, 120);
-  });
-
-  // Settings: preferred app
-  $('settingsApp').addEventListener('change', function () {
-    settings.app = this.value;
-    $('customPkgFieldSet').style.display = this.value === 'custom' ? 'block' : 'none';
-    saveSettings(); updatePreview(); updateAppStrip();
-    toast('Preferred app: ' + appLabel(this.value));
-  });
-  $('customPkgSet').addEventListener('input', function () {
-    settings.customPkg = this.value.trim();
-    saveSettings(); updatePreview(); updateAppStrip();
-  });
-
-  $('openBtn').addEventListener('click', openFromCompose);
-
-  $('saveHistBtn').addEventListener('click', function () {
-    const num = fullNumber();
-    if (!num) { toast('Enter a number first'); return; }
-    const msg = $('msg').value.trim();
-    addToHistory(num, msg, settings.app, '');
-    renderHistory(); toast('Saved to history');
-  });
-
-  $('saveContactBtn').addEventListener('click', async function () {
-    const num = fullNumber();
-    if (!num) { toast('Enter a number first'); return; }
-    const existing = getContactName(num);
-    const name = await askName(existing, num);
-    if (name === null) return;
-    if (!name.trim()) { toast('Name cannot be empty'); return; }
-    saveContact(num, name.trim());
-    renderHistory(); renderContacts();
-    toast('Contact saved');
-  });
-
-  // Country picker
-  $('ccBtn').addEventListener('click', openCountryModal);
-  $('setCountryRow').addEventListener('click', openCountryModal);$('ccSearch').addEventListener('input', function () { renderCCList(this.value); });
-  $('ccList').addEventListener('click', function (e) {
-    const item = e.target.closest('.cc-item');
-    if (!item) return;
-    settings.ccIso = item.dataset.iso;
-    settings.cc = item.dataset.dial;
-    saveSettings(); updateCountryUI(); updatePreview();$('ccModal').classList.remove('open');
-  });
-
-  // Settings
-  $('themeSel').addEventListener('change', function () {
-    settings.theme = this.value;
-    saveSettings(); applyTheme(); toast('Theme saved');
-  });
-  $('confirmDelSwitch').addEventListener('change', function () {
-    settings.confirmDelete = this.checked; saveSettings();
-  });
-
-  // History
-  $('histSearch').addEventListener('input', renderHistory);
-
-  $('histList').addEventListener('click', async function (e) {
-    const btn = e.target.closest('button[data-act]');
-    if (!btn) return;
-    const row = btn.closest('.chat-item');
-    const id = row.dataset.id;
-    const item = history.find(h => h.id === id);
-    if (!item) return;
-    const act = btn.dataset.act;
-
-    if (act === 'open') {
-      const app = settings.app;   // always use current preferred
-      openLink(buildLink(app, item.number, item.message));
-      item.count = (item.count || 1) + 1;
-      item.lastOpened = Date.now();
-      saveHistory(); renderHistory();
-      toast('Opening ' + appLabel(app) + '…');
-    }
-    else if (act === 'edit') openEdit(id);
-    else if (act === 'save') {
-      const existing = getContactName(item.number) || item.name || '';
-      const name = await askName(existing, item.number);
-      if (name === null) return;
-      if (!name.trim()) { toast('Name cannot be empty'); return; }
-      saveContact(item.number, name.trim());
-      renderHistory(); renderContacts();
-      toast('Contact saved');
-    }
-    else if (act === 'copy') copyText('+' + item.number);
-    else if (act === 'del') {
-      if (settings.confirmDelete && !confirm('Delete this entry?')) return;
-      history = history.filter(h => h.id !== id);
-      saveHistory(); renderHistory(); toast('Deleted');
-    }
-  });
-
-  // Edit modal
-  $('editSaveBtn').addEventListener('click', function () {
-    const item = history.find(h => h.id === editingId);
-    if (!item) { $('editModal').classList.remove('open'); return; }
-    const num = digits($('editNumber').value);
-    if (!num) { toast('Number cannot be empty'); return; }
-    item.name = $('editName').value.trim();
-    item.number = num;
-    item.message = $('editMsg').value;
-    saveHistory(); renderHistory();
-    $('editModal').classList.remove('open');
-    editingId = null;
-    toast('Entry updated');
-  });
-
-  // Name / Save Contact modal
-  $('nameSaveBtn').addEventListener('click', () => closeNameModal($('nameInput').value.trim()));$('nameCancelBtn').addEventListener('click', () => closeNameModal(null));
-  $('nameCancelX').addEventListener('click', () => closeNameModal(null));$('nameInput').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); closeNameModal(this.value.trim()); }
-  });
-
-  // Contacts tab
-  $('contactSearch').addEventListener('input', renderContacts);
-
-  $('contactList').addEventListener('click', function (e) {
-    const delBtn = e.target.closest('button[data-act="del"]');
-    const item = e.target.closest('.contact-item');
-    if (!item) return;
-    const number = item.dataset.number;
-    const name = getContactName(number) || '';
-
-    if (delBtn) {
-      e.stopPropagation();
-      if (settings.confirmDelete && !confirm('Delete contact "' + name + '"?')) return;
-      deleteContact(number);
-      renderContacts();
-      renderHistory();
-      toast('Contact deleted');
-      return;
-    }
-
-    // Tap row — prefill compose
-    $('phone').value = number;
-    $('msg').value = '';
-    updatePreview();
-    showView('compose');
-    setTimeout(() => $('msg').focus(), 150);
-    toast('Contact loaded');
-  });
-
-  // Modal close
-  document.addEventListener('click', function (e) {
-    const closer = e.target.closest('[data-close]');
-    if (closer) $(closer.dataset.close).classList.remove('open');
-    if (e.target.classList && e.target.classList.contains('modal')) e.target.classList.remove('open');
-  });
-
-  // Data management
-  $('exportBtn').addEventListener('click', exportCSV);
-  $('exportBtn2').addEventListener('click', exportCSV);$('importBtn').addEventListener('click', () => $('importFile').click());$('importFile').addEventListener('change', function () {
-    const file = this.files && this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function () {
-      try {
-        const added = importCSV(String(reader.result || ''));
-        if (added > 0) {
-          saveHistory(); renderHistory(); renderContacts();
-          toast('Imported ' + added + ' entr' + (added === 1 ? 'y' : 'ies'));
-        } else toast('No valid rows found');
-      } catch(err) { toast('Invalid CSV file'); }
-      $('importFile').value = '';
-    };
-    reader.readAsText(file);
-  });
-
-  $('clearHistBtn').addEventListener('click', clearHistory);$('clearHistBtn2').addEventListener('click', clearHistory);
-
-  $('resetAllBtn').addEventListener('click', function () {
-    if (!confirm('Reset ALL settings, history and contacts? This cannot be undone.')) return;
-    store.del(K_SET); store.del(K_HIST); store.del(K_CONTACTS);
-    settings = Object.assign({}, DEFAULT_SETTINGS);
-    history = [];
-    contacts = {};
-    saveSettings(); saveHistory(); saveContacts();
-    syncUIFromSettings(); applyTheme();
-    renderHistory(); renderContacts(); updatePreview();
-    toast('Everything reset');
-  });
-
-  // Install
-  $('installBtn').addEventListener('click', doInstall);
-  $('btnTopInstall').addEventListener('click', doInstall);$('bannerInstall').addEventListener('click', doInstall);
-  $('bannerClose').addEventListener('click', function () {$('installBanner').classList.remove('show');
-  });
-
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault(); installPrompt = e;
-    $('btnTopInstall').hidden = false;
-    $('installBanner').classList.add('show');
-  });
-  window.addEventListener('appinstalled', function () {
-    installPrompt = null;
-    $('installBanner').classList.remove('show');$('btnTopInstall').hidden = true;
-    toast('App installed 🎉');
-  });
-
-  // Keyboard shortcut
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      if ($('view-compose').classList.contains('active')) openFromCompose();
-    }
+// Service Worker setup for robust PWA offline/install caching
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    const swCode = `
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+      self.addEventListener('fetch', e => {
+        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+      });
+    `;
+    const blob = new Blob([swCode], { type: 'text/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
   });
 }
 
-/* =========================================================
-   22. UTILITIES
-   ========================================================= */
-function copyText(text) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => toast('Copied: ' + text))
-      .catch(() => fallbackCopy(text));
-  } else fallbackCopy(text);
-}
-function fallbackCopy(text) {
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); ta.remove();
-    toast('Copied: ' + text);
-  } catch(e) { toast('Copy failed'); }
-}
-
-function exportCSV() {
-  if (!history.length) { toast('Nothing to export'); return; }
-  const headers = ['id','name','number','message','app','createdAt','count'];
-  const lines = [headers.join(',')];
-  history.forEach(h => {
-    lines.push([
-      csvEscape(h.id),
-      csvEscape(getContactName(h.number) || h.name || ''),
-      csvEscape(h.number || ''),
-      csvEscape(h.message || ''), csvEscape(h.app || 'wa.me'),
-      csvEscape(h.createdAt || Date.now()), csvEscape(h.count || 1)
-    ].join(','));
-  });
-  const csv = lines.join('\r\n') + '\r\n';
-  const blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'wa-direct-history-' + new Date().toISOString().slice(0,10) + '.csv';
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { try { a.remove(); URL.revokeObjectURL(url); } catch(e){} }, 1500);
-  toast('CSV exported (' + history.length + ' rows)');
-}
-
-function importCSV(text) {
-  const rows = csvParse(text);
-  if (!rows || rows.length < 2) throw new Error('empty');
-  const headers = rows[0].map(h => String(h||'').trim().toLowerCase());
-  const col = name => headers.indexOf(name);
-  const iId=col('id'), iName=col('name'), iNumber=col('number'),
-        iMessage=col('message'), iApp=col('app'),
-        iCreated=col('createdat'), iCount=col('count');
-  if (iNumber === -1) throw new Error('missing number');
-  const existingIds = new Set(history.map(h => h.id));
-  let added = 0;
-  for (let r = 1; r < rows.length; r++) {
-    const row = rows[r];
-    if (!row || !row.length) continue;
-    if (row.length === 1 && !String(row[0]||'').trim()) continue;
-    const number = digits(iNumber > -1 && row[iNumber] != null ? row[iNumber] : '');
-    if (!number) continue;
-    let id = uid();
-    if (iId > -1 && row[iId] && !existingIds.has(row[iId])) id = String(row[iId]);
-    existingIds.add(id);
-    let createdAt = Date.now();
-    if (iCreated > -1 && row[iCreated]) {
-      const n = Number(row[iCreated]);
-      if (isFinite(n) && n > 0) createdAt = n;
-      else { const d = Date.parse(row[iCreated]); if (!isNaN(d)) createdAt = d; }
-    }
-    let count = 1;
-    if (iCount > -1 && row[iCount]) {
-      const n = Number(row[iCount]);
-      if (isFinite(n) && n > 0) count = Math.floor(n);
-    }
-    const name = iName > -1 ? String(row[iName]||'') : '';
-    history.push({
-      id, name: name,
-      number, message: iMessage > -1 ? String(row[iMessage]||'') : '',
-      app: iApp > -1 ? String(row[iApp]||'wa.me') : 'wa.me',
-      createdAt, count
-    });
-    if (name && !contacts[number]) {
-      contacts[number] = { name: name, savedAt: Date.now() };
-    }
-    added++;
-  }
-  saveContacts();
-  return added;
-}
-
-function clearHistory() {
-  if (!history.length) { toast('History is already empty'); return; }
-  if (!confirm('Delete all history entries? This cannot be undone.')) return;
-  history = []; saveHistory(); renderHistory(); toast('History cleared');
-}
-
-async function doInstall() {
+function doInstall() {
   if (installPrompt) {
     installPrompt.prompt();
-    try {
-      const res = await installPrompt.userChoice;
-      if (res && res.outcome === 'accepted') toast('Installing…');
-    } catch(e){}
-    installPrompt = null;
+    installPrompt.userChoice.then(() => { installPrompt = null; });
     $('installBanner').classList.remove('show');
     return;
   }
-  const ua = navigator.userAgent;
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-  if (isIOS) {
-    alert('To install on iPhone/iPad:\n\n1. Tap the Share button\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
-  } else {
-    alert('To install:\n\n• Android (Chrome): tap ⋮ menu → "Install app" or "Add to Home screen"\n• Desktop (Chrome/Edge): click the install icon in the address bar\n\nNote: full PWA install requires a page served over HTTPS.');
-  }
+  alert('To install this app:\n\n• Android: Tap browser menu (⋮) -> "Install app" or "Add to Home Screen".\n• iOS: Tap Share -> "Add to Home Screen".\n• Ensure you are viewing this via HTTPS or Localhost.');
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else init();
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  $('btnTopInstall').hidden = false;
+  $('installBanner').classList.add('show');
+});
 
+window.addEventListener('appinstalled', () => {
+  installPrompt = null;
+  $('installBanner').classList.remove('show');$('btnTopInstall').hidden = true;
+});
+
+$('installBtn').addEventListener('click', doInstall);
+$('bannerInstall').addEventListener('click', doInstall);$('bannerClose').addEventListener('click', () => $('installBanner').classList.remove('show'));$('btnTopInstall').addEventListener('click', doInstall);
+
+// Basic UI toggles
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    $( 'view-' + t.dataset.view ).classList.add('active');
+    t.classList.add('active');
+  });
+});
 })();
 </script>
 </body>
